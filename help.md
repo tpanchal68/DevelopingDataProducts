@@ -25,3 +25,5 @@ Source code is available on the [GitHub](https://github.com/tpanchal68/Developin
 
 Presentation is available on the [RPub](http://rpubs.com/tpanchal/146641)
 
+Application can be executed at [ShinyApps.io](https://tpanchal.shinyapps.io/DevelopingDataProducts/)
+
