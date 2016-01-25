@@ -1,0 +1,138 @@
+College Comparison for Prospective Students
+========================================================
+author: Tejash Panchal
+date: January 24th, 2016
+
+Problem Statement/Objective
+========================================================
+
+- For prospective students, selecting the right college can be challenging based on number of choices and various factors involved.
+- Parents and students need an objective and systemetic way to evaluate colleges.
+- The information students and parents receive directly from colleges, universities, and other sources is often sales oriented and therefore may not be objective.
+
+Solution to students/parents question
+========================================================
+
+- This application attemts to provide students and parents with objective way to gather data on colleges and universities and a systemetic way to evaluate choices.
+- This application also allows students and parents to perform comparison between maximum of three universities, or between three community colleges, or between universities and community colleges.
+
+Sample cost comparison table
+========================================================
+
+- Table below shows the cost comparison between three colleges
+
+```{r, echo=FALSE, message=FALSE, cache=FALSE}
+library(data.table)
+
+if(!exists("CollegeScorecardData")){
+        CollegeScorecardData <- fread(
+                "Data/MERGED2013_PP.csv",
+                header = TRUE,
+                sep = ",",
+                na.strings = c('NA','', 'NULL'),
+                stringsAsFactors = FALSE
+        )
+}
+
+college_data <- subset(CollegeScorecardData, INSTNM == "Stanford University" | INSTNM == "San Jose State University" | INSTNM == "Santa Clara University")
+
+Costs_table <- data.frame(
+        "College Name" = college_data$INSTNM,
+        "Academic Year Cost" = as.numeric(as.character(college_data$COSTT4_A)),
+        "Program Year Cost" = as.numeric(as.character(college_data$COSTT4_P)),
+        "In State Tuition" = as.numeric(as.character(college_data$TUITIONFEE_IN)),
+        "Out of State Tuition" = as.numeric(as.character(college_data$TUITIONFEE_OUT)),
+        "Program Year Tuition and fees" = as.numeric(as.character(college_data$TUITIONFEE_PROG))
+)
+# Remove column with NA values
+Costs_table <- Costs_table[,colSums(is.na(Costs_table))<nrow(Costs_table)]
+Costs_table <- as.data.table(Costs_table)
+```
+
+```{r, echo=FALSE, message=FALSE, cache=FALSE}
+knitr::kable(Costs_table)
+```
+
+Sample degree completion by Ethnicity Chart
+========================================================
+
+- Bar chart below also highlights direct correlation between Cost of a college and Graduation Rate.
+
+```{r, echo=FALSE, message=FALSE, cache=FALSE}
+library(data.table)
+library(ggplot2)
+require(reshape2)
+
+# Prepare College Completion graph
+Completion_table <- data.frame(
+        "College Name" = college_data$INSTNM,
+        "NRA" = as.numeric(as.character(college_data$C150_4_NRA)),
+        "API" = as.numeric(as.character(college_data$C150_4_API)),
+        "HISP" = as.numeric(as.character(college_data$C150_4_HISP)),
+        "AIAN" = as.numeric(as.character(college_data$C150_4_AIAN)),
+        "NHPI" = as.numeric(as.character(college_data$C150_4_NHPI)),
+        "2MOR" = as.numeric(as.character(college_data$C150_4_2MOR)),
+        "UNKN" = as.numeric(as.character(college_data$C150_4_UNKN)),
+        "CC NRA" = as.numeric(as.character(college_data$C150_L4_NRA)),
+        "CC API" = as.numeric(as.character(college_data$C150_L4_API)),
+        "WHITE" = as.numeric(as.character(college_data$C150_4_WHITE)),
+        "BLACK" = as.numeric(as.character(college_data$C150_4_BLACK)),
+        "ASIAN" = as.numeric(as.character(college_data$C150_4_ASIAN)),
+        "CC HISP" = as.numeric(as.character(college_data$C150_L4_HISP)),
+        "CC AIAN" = as.numeric(as.character(college_data$C150_L4_AIAN)),
+        "CC NHPI" = as.numeric(as.character(college_data$C150_L4_NHPI)),
+        "CC 2MOR" = as.numeric(as.character(college_data$C150_L4_2MOR)),
+        "CC UNKN" = as.numeric(as.character(college_data$C150_L4_UNKN)),
+        "POOLED" = as.numeric(as.character(college_data$C150_4_POOLED)),
+        "CC WHITE" = as.numeric(as.character(college_data$C150_L4_WHITE)),
+        "CC BLACK" = as.numeric(as.character(college_data$C150_L4_BLACK)),
+        "CC ASIAN" = as.numeric(as.character(college_data$C150_L4_ASIAN)),
+        "CC POOLED" = as.numeric(as.character(college_data$C150_L4_POOLED)),
+        "WHITENH" = as.numeric(as.character(college_data$C150_4_WHITENH)),
+        "BLACKNH" = as.numeric(as.character(college_data$C150_4_BLACKNH)),
+        "AIANOld" = as.numeric(as.character(college_data$C150_4_AIANOld)),
+        "HISPOld" = as.numeric(as.character(college_data$C150_4_HISPOld)),
+        "CC WHITENH" = as.numeric(as.character(college_data$C150_L4_WHITENH)),
+        "CC BLACKNH" = as.numeric(as.character(college_data$C150_L4_BLACKNH)),
+        "CC AIANOld" = as.numeric(as.character(college_data$C150_L4_AIANOld)),
+        "CC HISPOld" = as.numeric(as.character(college_data$C150_L4_HISPOld)),
+        "POOLED_SUPP" = as.numeric(as.character(college_data$C150_4_POOLED_SUPP)),
+        "CC POOLED_SUPP" = as.numeric(as.character(college_data$C150_L4_POOLED_SUPP))
+)
+# Remove column with NA values and if all elements are zero
+# Completion_table <- Completion_table[, colSums(Completion_table != 0) > 0]
+Completion_table <- Completion_table[,colSums(is.na(Completion_table))<nrow(Completion_table)]
+# If we still have NA left, replace it with 0
+Completion_table[is.na(Completion_table)] <- 0
+
+
+# Reshape data to all the headers in one column and data in other
+Completion_table_reshape <- melt(Completion_table, "College.Name")
+
+# Convert values into decimal
+Completion_table_reshape$value <- round(Completion_table_reshape$value * 100)
+
+# Change Column Names
+colnames(Completion_table_reshape) <- c("College", "StudentBodyByRace", "Percentage")
+
+#Create plot
+CompletionPlot <- ggplot(
+        data = Completion_table_reshape,
+        aes(
+                x=StudentBodyByRace,
+                y=Percentage,
+                fill = factor(College)
+        )
+)
+CompletionPlot <- CompletionPlot + 
+        geom_bar(stat="identity", position=position_dodge()) +
+        geom_text(aes(y=Percentage + 0.2, ymax=Percentage + 10, label=Percentage), position= position_dodge(width=0.9), hjust=0, vjust=0, color="black", size = 4, check_overlap = TRUE) +
+        theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+        scale_y_continuous("Degree Completion %") +
+        ggtitle("Degree Completion by Ethnicity") +
+        theme_bw()
+```
+
+```{r, echo=FALSE, fig=TRUE, fig.align="center", fig.width=12, fig.height=6}
+CompletionPlot
+```
