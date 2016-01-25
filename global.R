@@ -2,8 +2,8 @@ library(data.table)
 
 # Read data file and load data
 if(!exists("CollegeScorecardData")){
-        CollegeScorecardData <- fread(
-                #        CollegeScorecardData <- read.csv2(
+        #CollegeScorecardData <- fread(
+        CollegeScorecardData <- read.csv2(
                 "Data/MERGED2013_PP.csv",
                 header = TRUE, 
                 sep = ",",

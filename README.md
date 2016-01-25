@@ -9,5 +9,5 @@
 - Data folder   -> Contains MERGED2013_PP.csv data file
 - LICENSE.md    -> License verbage
 - README.md     -> This file
-college_comparison*     -> Files for R presentation which is available at "http://rpubs.com/tpanchal/146641"
+- college_comparison*     -> Files for R presentation which is available at "http://rpubs.com/tpanchal/146641"
 

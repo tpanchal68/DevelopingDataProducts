@@ -25,7 +25,8 @@ Sample cost comparison table
 library(data.table)
 
 if(!exists("CollegeScorecardData")){
-        CollegeScorecardData <- fread(
+        #CollegeScorecardData <- fread(
+        CollegeScorecardData <- read.csv2(
                 "Data/MERGED2013_PP.csv",
                 header = TRUE,
                 sep = ",",
