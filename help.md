@@ -11,7 +11,7 @@ runtime: shiny
 This application is to provide Prospective Students ability to compare colleges.
 
 * This application allows user to perform Comparison between universities, between community colleges, and mix of both.
-* This application is using data from year 2012 since that is the current data on the education web site listed below.
+* This application is using data from year 2013 since that is the current data on the education web site listed below.
 * In "User Input Area", user can enter up to 3 colleges he or she want to compare. 
 * Click "Compare" button. 
 * For colleges user entered, the program will extract the data, perform calculations, create charts/tables, and prepares to display.
